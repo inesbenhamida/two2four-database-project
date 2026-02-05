@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Ajout d'un abonné{% endblock %}
+
+{% block content %}
+<body class="page-ajouter-abonne">
+    <div class="conteneur-ajout-abonne">
+        <h1>Ajouter un Abonné</h1>
+        <form method="POST" action="{{ url_for('ajouter_abonne') }}" class="formulaire-ajout-abonne">
+            <div class="form-group">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" placeholder="Entrez le nom" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" placeholder="Entrez le prénom" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" placeholder="Entrez l'email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="num_tel">Téléphone :</label>
+                <input type="text" id="num_tel" name="num_tel" placeholder="Entrez le numéro de téléphone">
+            </div>
+            
+            <div class="form-group">
+                <label for="mdp">Mot de Passe :</label>
+                <input type="password" id="mdp" name="mdp" placeholder="Entrez le mot de passe" required>
+            </div>
+
+            <button type="submit" class="btn-principal">Ajouter</button> <!-- Changer la classe ici -->
+        </form>
+        <a href="{{ url_for('abonnes') }}" >Retour à la liste des abonnés</a>
+    </div>
+</body>
+{% endblock %}

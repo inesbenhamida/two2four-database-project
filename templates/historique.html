@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Historique des trajets abonné{% endblock %}
+
+{% block body_class %}page-historique{% endblock %}
+
+{% block content %}
+<body class="page-historique">
+    <h1 class="titre-page">Historique de vos trajets</h1>
+
+    <div class="conteneur-historique">
+        <div class="section-historique">
+            <h2 class="sous-titre-section">Véhicules</h2>
+            {% if historique_vehicules %}
+            <div class="tableau-conteneur">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>Modèle</th>
+                            <th>Catégorie</th>
+                            <th>Date de début</th>
+                            <th>Date de fin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trajet in historique_vehicules %}
+                            <tr>
+                                <td>{{ trajet.modele }}</td>
+                                <td>{{ trajet.categorie }}</td>
+                                <td>{{ trajet.debut_reservation }}</td>
+                                <td>{{ trajet.fin_reservation }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p>Aucun trajet enregistré pour les véhicules.</p>
+            {% endif %}
+
+            <h2 class="sous-titre-section">Emplacements</h2>
+            {% if historique_emplacements %}
+            <div class="tableau-conteneur">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Station</th>
+                            <th>Date de début</th>
+                            <th>Date de fin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trajet in historique_emplacements %}
+                            <tr>
+                                <td>{{ trajet.type_emplacement }}</td>
+                                <td>{{ trajet.id_station }}</td>
+                                <td>{{ trajet.debut_reservation }}</td>
+                                <td>{{ trajet.fin_reservation }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p>Aucun trajet enregistré pour les emplacements.</p>
+            {% endif %}
+
+        </div>
+        <a href="{{ url_for('accueil') }}" class="bouton-retour">Retour à l'accueil</a>
+
+    </div>
+</body>
+
+{% endblock %}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-pNkZVqkqx8AMr+qXAWURpAqkI/u2VJi7F1xGxL7ZHgDsrPRX3zlUTLknVChmuQOcAA4ByKpSfLpZ4HhaA0h8kg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body class="page-reservations">
+    <!-- Barre de navigation -->
+    <header class="barre-navigation">
+        <div class="logo">
+            <a href="{{ url_for('accueil') }}">Two2Four.</a>
+        </div>
+        <!-- Liens de navigation version desktop -->
+        <ul class="liens-navigation">
+            <li><a href="{{ url_for('stations') }}">Stations</a></li>
+            <li><a href="{{ url_for('vehicules') }}">Véhicules</a></li>
+            <li><a href="{{ url_for('reservations') }}">Réservations</a></li>
+            <li><a href="{{ url_for('historique') }}">Historique</a></li>
+            <li><a href="{{ url_for('statistiques') }}">Statistiques</a></li>
+
+            {% if session.get("id_abonne") %}
+                <!-- Bouton de déconnexion si l'utilisateur est connecté -->
+                <li><a href="{{ url_for('deconnexion') }}" class="bouton-principal">Déconnexion</a></li>
+            {% else %}
+                <!-- Bouton de connexion si l'utilisateur n'est pas connecté -->
+                <li><a href="{{ url_for('connexion') }}" class="bouton-principal">Connexion</a></li>
+            {% endif %}
+        </ul>
+    </header>
+
+    <!-- Contenu principal -->
+    <div class="reservation-conteneur">
+        <h1>Planifiez votre prochain déplacement</h1>
+        <p class="subtitle">Réservez facilement un véhicule ou un emplacement en quelques clics.</p>
+
+        <form method="GET" action="{{ url_for('reservations') }}" class="reservation-form">
+            <fieldset>
+                <!-- Sélection de la station -->
+                <label for="station">Station :</label>
+                <select name="station" id="station" required>
+                    <option value="" selected>-- Choisir une station --</option>
+                    {% for station in stations %}
+                    <option value="{{ station.id_station }}"
+                        {% if request.args.get('station') == station.id_station|string %}selected{% endif %}>
+                        {{ station.ville }} - {{ station.adresse }}
+                    </option>
+                    {% endfor %}
+                </select>
+        
+                <!-- Type de réservation -->
+                <label for="type_reservation">Type de réservation :</label>
+                <select name="type_reservation" id="type_reservation" required>
+                    <option value="" selected>-- Choisir le type de réservation --</option>
+                    <option value="vehicule" {% if request.args.get('type_reservation') == 'vehicule' %}selected{% endif %}>Véhicule</option>
+                    <option value="emplacement" {% if request.args.get('type_reservation') == 'emplacement' %}selected{% endif %}>Emplacement</option>
+                </select>
+        
+                {% if request.args.get('station') and request.args.get('type_reservation') %}
+                <!-- Dates affichées seulement après station et type sélectionnés -->
+                <label for="debut">Début de la réservation :</label>
+                <input type="datetime-local" name="debut" id="debut" value="{{ request.args.get('debut') }}" required>
+        
+                {% if request.args.get('type_reservation') == "vehicule" %}
+                <label for="fin">Fin de la réservation :</label>
+                <input type="datetime-local" name="fin" id="fin" value="{{ request.args.get('fin') }}" required>
+                {% endif %}
+        
+                <button type="submit" class="btn-submit">Afficher les options disponibles</button>
+                {% endif %}
+            </fieldset>
+        </form>
+        
+        <!-- Affichage des options (véhicules ou emplacements) après avoir soumis le formulaire -->
+        {% if vehicules or emplacements %}
+        <form method="POST" class="reservation-form">
+            <fieldset>
+                     <!-- Champ caché pour transmettre l'ID de la station -->
+                <input type="hidden" name="station" value="{{ request.args.get('station') }}">
+                
+                <!-- Champ caché pour transmettre le type de réservation -->
+                <input type="hidden" name="type_reservation" value="{{ request.args.get('type_reservation') }}">
+                
+                <!-- Champ caché pour transmettre la date de début -->
+                <input type="hidden" name="debut" value="{{ request.args.get('debut') }}">
+                
+                <!-- Champ caché pour transmettre la date de fin -->
+                <input type="hidden" name="fin" value="{{ request.args.get('fin') }}">
+                
+                {% if vehicules %}
+                <label for="vehicule">Véhicule disponible :</label>
+                <select name="vehicule" id="vehicule" required>
+                    <option value="" selected>-- Sélectionner un véhicule --</option>
+                    {% for vehicule in vehicules %}
+                    <option value="{{ vehicule.id_vehicule }}">{{ vehicule.categorie }} - {{ vehicule.modele }}</option>
+                    {% endfor %}
+                </select>
+                {% elif emplacements %}
+                <label for="emplacement">Emplacement disponible :</label>
+                <select name="emplacement" id="emplacement" required>
+                    <option value="" selected>-- Sélectionner un emplacement --</option>
+                    {% for emplacement in emplacements %}
+                    <option value="{{ emplacement.id_emplacement }}">{{ emplacement.type_emplacement }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+        
+                <!-- Soumettre la réservation -->
+                <button type="submit" class="btn-submit">Réserver</button>
+            </fieldset>
+        </form>
+        {% endif %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        
+    </div>
+
+    <!-- Historique des réservations -->
+    <div class="reservations-historique">
+        <h2>Mes Réservations</h2>
+        <table class="reservations-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Détails</th>
+                    <th>Station</th>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.type }}</td>
+                    <td>{{ reservation.details }}</td>
+                    <td>{{ reservation.station_ville }} - {{ reservation.station_adresse }}</td>
+                    <td>{{ reservation.debut }}</td>
+                    <td>{{ reservation.fin }}</td>
+                    <td>
+                        {% if reservation.type == "Véhicule" %}
+                        <form action="{{ url_for('annuler_reservation_vehicule', id_vehicule=reservation.id_reservation) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="bouton-annuler">Annuler</button>
+                        </form>
+                        <form action="{{ url_for('signaler_vehicule', id_vehicule=reservation.id_reservation) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="bouton-signaler">Signaler</button>
+                        </form>
+                        {% elif reservation.type == "Emplacement" %}
+                        <form action="{{ url_for('annuler_reservation_emplacement', id_emplacement=reservation.id_reservation) }}" method="POST">
+                            <button type="submit" class="bouton-annuler">Annuler</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if reservations_imminentes %}
+                <div class="alert alert-warning">
+                    <strong>Attention :</strong> Les réservations suivantes expirent bientôt :
+                    <ul>
+                        {% for res in reservations_imminentes %}
+                            <li>
+                                {{ res.details }} - Expiration à {{ res.fin.strftime('%H:%M') }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </tbody>
+            
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('station').addEventListener('change', () => document.forms[0].submit());
+        document.getElementById('type_reservation').addEventListener('change', () => document.forms[0].submit());
+        document.getElementById('fin').addEventListener('change', () => document.forms[0].submit());
+
+    </script>
+</body>
+<footer class="pied-de-page">
+    <p>© 2024 Two2Four. Tous droits réservés.</p>
+</footer>
+
+</html>

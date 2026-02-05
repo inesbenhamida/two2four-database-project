@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Two2Four{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="barre-navigation">
+        <div class="logo">
+            <a href="{{ url_for('accueil') }}">Two2Four.</a>
+        </div>
+        <ul class="liens-navigation">
+            <li><a href="{{ url_for('stations') }}"></i>Stations</a></li>
+            <li><a href="{{ url_for('vehicules') }}">Véhicules</a></li>
+            <li><a href="{{ url_for('reservations') }}">Réservations</a></li>
+            <li><a href="{{ url_for('historique') }}">Historique</a></li>
+            <li><a href="{{ url_for('statistiques') }}">Statistiques</a></li>
+
+            {% if session.get("id_abonne") %}
+                <li><a href="{{ url_for('deconnexion') }}" class="bouton-principal">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{{ url_for('connexion') }}" class="bouton-principal">Connexion</a></li>
+            {% endif %}
+        </ul>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+
+<footer class="pied-de-page">
+    <p>© 2024 Two2Four. Tous droits réservés.</p>
+</footer>
+</html>

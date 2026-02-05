@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main>
+    <section class="hero">
+        <div class="texte-principal">
+            <h1>Roulez "vert"</h1>
+            <p>Découvrez la solution écologique pour vos déplacements en ville.</p>
+        </div>
+        <div class="actions">
+            <a href="{{ url_for('reservations') }}" class="btn-principal">Réserver maintenant</a>
+            <a href="{{ url_for('vehicules') }}" class="btn-secondaire">Voir les véhicules</a>
+        </div>
+    </section>
+    
+</main>
+{% endblock %}
+

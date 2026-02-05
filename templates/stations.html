@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Stations{% endblock %}
+
+
+{% block body_class %}page-stations{% endblock %}
+
+{% block content %}
+    <h1 class="page-titre">Liste des stations </h1>
+
+    <form method="GET" action="{{ url_for('stations') }}" class="filter-form">
+        <label for="ville">Choisir une ville :</label>
+        <select name="ville" id="ville" onchange="this.form.submit()">
+            <option value="">Toutes les villes</option>
+            {% for ville in villes %}
+                <option value="{{ ville }}" {% if ville ==ville_selectionnee %}selected{% endif %}>
+                    {{ ville }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>Véhicules disponibles</th>
+                    <th>Emplacements libres</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for station in stations %}
+                <tr>
+                    <td>{{ station.id_station }}</td>
+                    <td>{{ station.adresse }}</td>
+                    <td>{{ station.ville }}</td>
+                    <td> {{ station.vehicules_disponibles }}</td>
+                    <td>{{ station.emplacements_libres }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('accueil') }}" class="bouton-retour">Retour à l'accueil</a>
+
+{% endblock %}

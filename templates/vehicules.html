@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Véhicules{% endblock %}
+
+{% block body_class %}vehicules-page{% endblock %}
+
+{% block content %}
+    <h1 class="page-title" style="color: white; text-align: center; position: relative; z-index: 2;">Liste des véhicules disponibles</h1>
+
+    <main>
+        <div class="table-container">
+            <form method="GET" action="{{ url_for('vehicules') }}" class="filter-form">
+                <label for="station">Filtrer par station :</label>
+                <select name="station" id="station" onchange="this.form.submit()">
+                    <option value="">Toutes les stations</option>
+                    {% for station in stations %}
+                    <option value="{{ station.id_station }}" {% if station_selectionnee == station.id_station|string %}selected{% endif %}>
+                        {{ station.ville }} - {{ station.adresse }}
+                    </option>
+                    {% endfor %}
+                </select>
+            
+                <label for="categorie">Filtrer par catégorie :</label>
+                <select name="categorie" id="categorie" onchange="this.form.submit()">
+                    <option value="">Toutes les catégories</option>
+                    <option value="Voiture" {% if categorie_selectionnee == 'Voiture' %}selected{% endif %}>Voiture</option>
+                    <option value="Vélo" {% if categorie_selectionnee == 'Vélo' %}selected{% endif %}>Vélo</option>
+                </select>
+            </form>
+                   
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Catégorie</th>
+                        <th>Numéro d'immatriculation</th>
+                        <th>Modèle</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vehicule in vehicules %}
+                    <tr>
+                        <td>{{ vehicule.categorie }}</td>
+                        <td>{{ vehicule.numimmat if vehicule.numimmat else 'N/A' }}</td>
+                        <td>{{ vehicule.modele }}</td>
+                        <td class="statut {% if vehicule.statut == 'Disponible' %}disponible{% elif vehicule.statut == 'En réparation' %}indisponible{% elif vehicule.statut == 'Occupé' %}occupe{% endif %}">
+                            {{ vehicule.statut }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+        <a href="{{ url_for('accueil') }}" class="bouton-retour">Retour à l'accueil</a>
+    
+    </main>
+    
+{% endblock %}
+

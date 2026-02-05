@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Abonnés{% endblock %}
+
+{% block content %}
+<body class="page-abonnes">
+    <h1 class="titre-page">Liste des Abonnés</h1>
+    
+    <div class="conteneur-tableau">
+        <table class="tableau">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for abonne in abonnes %}
+                <tr>
+                    <td>{{ abonne.id_abonne }}</td>
+                    <td>{{ abonne.nom }}</td>
+                    <td>{{ abonne.prenom }}</td>
+                    <td>{{ abonne.email }}</td>
+                    <td>{{ abonne.num_tel if abonne.num_tel else "N/A" }}</td>
+                    <td>
+                        <a href="{{ url_for('modifier_abonne', id_abonne=abonne.id_abonne) }}" class="btn-modifier">Modifier</a>
+                        <a href="{{ url_for('supprimer_abonne', id_abonne=abonne.id_abonne) }}" class="btn-supprimer">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{{ url_for('accueil') }}" class="bouton-retour">Retour à l'accueil</a>
+</body>
+{% endblock %}

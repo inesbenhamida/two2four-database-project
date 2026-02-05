@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<body class="page-connexion">
+    <div class="boite-connexion">
+        <div class="image-connexion">
+        </div>
+        <h2>Connexion</h2>
+        <form action="{{url_for('connexion')}}" class="formulaire-connexion" method="POST">
+            <label for="champ-email">Adresse email :</label>
+            <input type="text" id="champ-email" name="email" placeholder="Votre adresse email" required>
+            
+            <label for="champ-mot-de-passe">Mot de passe :</label>
+            <input type="password" id="champ-mot-de-passe" name="mdp" placeholder="Votre mot de passe" required>
+            
+            <button type="submit">Se connecter</button>
+        </form>
+        <a href="{{ url_for('accueil') }}" class="lien-retour">Retour à l'accueil</a>
+    </div>
+
+    <!-- Section pour afficher les messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+</body>
+</html>
+{% endblock %}

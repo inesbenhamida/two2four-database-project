@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}
+Statistiques des Stations
+{% endblock %}
+
+{% block body_class %} page-statistiques {% endblock %}
+
+{% block content %}
+<main>
+    <h1 class="titre-page">Statistiques des Stations</h1>
+
+    <section class="card">
+        <h2>Taux d’utilisation journalier</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Station</th>
+                    <th>Adresse</th>
+                    <th>Ville</th> <!-- Ajout de la colonne Ville -->
+                    <th>Jour de la Semaine</th>
+                    <th>Nombre de Réservations</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in stats_journalieres %}
+                <tr>
+                    <td>{{ stat.id_station }}</td>
+                    <td>{{ stat.adresse }}</td>
+                    <td>{{ stat.ville }}</td> <!-- Ajout des données pour la colonne Ville -->
+                    <td>
+                        {% if stat.jour_semaine == 0 %} Dimanche
+                        {% elif stat.jour_semaine == 1 %} Lundi
+                        {% elif stat.jour_semaine == 2 %} Mardi
+                        {% elif stat.jour_semaine == 3 %} Mercredi
+                        {% elif stat.jour_semaine == 4 %} Jeudi
+                        {% elif stat.jour_semaine == 5 %} Vendredi
+                        {% elif stat.jour_semaine == 6 %} Samedi
+                        {% endif %}
+                    </td>
+                    <td>{{ stat.nombre_reservations }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </section>
+
+    <section class="card">
+        <h2>Disponibilités des Véhicules</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Station</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>Véhicules Disponibles</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dispo in disponibilites %}
+                <tr>
+                    <td>{{ dispo.id_station }}</td>
+                    <td>{{ dispo.adresse }}</td>
+                    <td>{{ dispo.ville }}</td>
+                    <td>{{ dispo.vehicules_disponibles }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="card">
+        <h2>Stations Fréquemment Vides</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Station</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>Véhicules Disponibles</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for station in stations_vides %}
+                <tr>
+                    <td>{{ station.id_station }}</td>
+                    <td>{{ station.adresse }}</td>
+                    <td>{{ station.ville }}</td>
+                    <td>{{ station.vehicules_disponibles }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <a href="{{ url_for('accueil') }}" class="bouton-retour">Retour à l'accueil</a>
+</main>
+{% endblock %}
+
